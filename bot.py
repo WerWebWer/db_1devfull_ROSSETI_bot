@@ -7,6 +7,7 @@ import logging
 import config
 import json
 from random import randint
+import fire
 
 bot = telebot.TeleBot(token = config.BOT_TOKEN)
 
@@ -261,6 +262,7 @@ def callback_inline(call):
 			for i in range(10):
 				data_old[count_st][i] = data[j][i]
 			data_old[count_st][8] = status[0]
+			fire.send_data(str(data_old[count_st][1]), str(data_old[count_st][2]))
 			count_st = count_st + 1
 			clear_data_id(find_id(call.message.chat.id))
 		elif call.data == "no":
