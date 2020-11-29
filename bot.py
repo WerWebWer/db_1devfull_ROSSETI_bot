@@ -134,13 +134,13 @@ def start_message(message):
 	else:
 		clear_data_id(find_id(message.chat.id))
 
-	bot.send_message(message.chat.id, 'Привет!', reply_markup = keyboard1)
-	bot.send_message(message.chat.id, 'Оформим идею?\nНажми \"Начать\" внизу, чтобы начали формировать заявку')
+	bot.send_message(message.chat.id, 'Добрый день!', reply_markup = keyboard1)
+	bot.send_message(message.chat.id, 'Оформим рационализаторскую идею?\nНажми \"Начать\" внизу, чтобы начали формировать заявку')
 	# dbworker.write_to_json(message.chat.id, 0)
 
 @bot.message_handler(commands=['help'])
 def help_message(message):
-	bot.send_message(message.chat.id, 'Команда:\n/start - начать с начала\n/cancel - отмена всего', reply_markup = keyboard1)
+	bot.send_message(message.chat.id, 'Я помогаю быстро оформить идею и отправлю ее на сервер для дальнейших процедур. \n\nМожешь ввести следующие команды:\n/start - начать с начала\n/cancel - отмена всего\n/help - помощь\n/my - посмотреть мои заявки', reply_markup = keyboard1)
 	clear_data_id(find_id(message.chat.id))
 
 @bot.message_handler(commands=['cancel'])
@@ -194,7 +194,7 @@ def send_text(message):
 	elif i == 7:
 		j = find_id(message.chat.id)
 		bot.send_message(message.chat.id, 'Ваша заявка\n\n📍 Название:\n'+ str(data[j][1]) + "\n📍 Описание:\n" + str(data[j][2]) + "\n📍 Категория:\n" + str(data[j][3]) + "\n📍 Подкатегория:\n" + str(data[j][4]) + "\n📍 Предполагаемый бюджет\n" + str(data[j][5]) + "\n📍 Предполагаемый срок\n" + str(data[j][6]))
-		bot.send_message(message.chat.id, 'Отправляем?', reply_markup = button4)
+		bot.send_message(message.chat.id, 'Отправляем?\nПри необходимости можете приложить документ', reply_markup = button4)
 	else:
 		help_message(message)
 		
@@ -254,13 +254,13 @@ def callback_inline(call):
 			data[find_id(call.message.chat.id)][i] = "Затрудняюсь"
 			send_text(call.message)
 		elif call.data == "yes":
-			bot.send_message(chat_id=call.message.chat.id, text = 'Отправляем руководству', reply_markup = keyboard1)
+			bot.send_message(chat_id=call.message.chat.id, text = 'Отправляем на сервер', reply_markup = keyboard1)
 			j = find_id(call.message.chat.id)
 			bot.send_message(chat_id=353383640, text = 'Новая заявка от ' + str(data[j][9]) + "\n\n📍 Название:\n"+ str(data[j][1]) + "\n📍 Описание:\n" + str(data[j][2]) + "\n📍 Категория:\n" + str(data[j][3]) + "\n📍 Подкатегория:\n" + str(data[j][4]) + "\n📍 Предполагаемый бюджет\n" + str(data[j][5]) + "\n📍 Предполагаемый срок\n" + str(data[j][6]), reply_markup = keyboard1)
 
 			for i in range(10):
 				data_old[count_st][i] = data[j][i]
-			data_old[count_st][8] = status[1]
+			data_old[count_st][8] = status[0]
 			count_st = count_st + 1
 			clear_data_id(find_id(call.message.chat.id))
 		elif call.data == "no":
@@ -270,6 +270,10 @@ def callback_inline(call):
 	elif call.inline_message_id:
 		if call.data == "test":
 			bot.edit_message_text(inline_message_id=call.inline_message_id, text="Бдыщь")
+
+@bot.message_handler(content_types=['sticker', 'audio', 'document', 'video', 'video_note', 'voice', 'location', 'contact', 'new_chat_members', 'left_chat_member', 'new_chat_title', 'new_chat_photo', 'delete_chat_photo', 'group_chat_created', 'supergroup_chat_created', 'channel_chat_created', 'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message'])
+def doc_id(message):
+	bot.send_message(message.chat.id, 'Отлично!\nВаш файл был прикреплен к последней заявке и отправлен на сервер', reply_markup = keyboard1)
 
 if __name__ == "__main__":
 	bot.infinity_polling()
